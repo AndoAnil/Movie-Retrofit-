@@ -11,6 +11,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import retrofit2.Call;
@@ -27,6 +28,15 @@ public class MainActivity extends AppCompatActivity {
     private List<Movie> movieList;
     private Context context=MainActivity.this;
 
+
+    /*new apk
+    //https://run.mocky.io/v3/38f55cac-d1a6-483e-9cdf-55435c80e109
+   */
+
+    /* Nested object
+    https://run.mocky.io/v3/6360ab61-dfcf-4af1-b7b2-ee52d9081d7a
+     */
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,14 +44,35 @@ public class MainActivity extends AppCompatActivity {
         recyclerView=(RecyclerView) findViewById(R.id.recyclerView);
         movieList=new ArrayList<>();
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+
         Retrofit retrofit=new Retrofit.Builder()
                 .baseUrl("https://run.mocky.io/")
                 .addConverterFactory(GsonConverterFactory.create()).build();
         //Interface instances
         MovieApiCall movieApiCall=retrofit.create(MovieApiCall.class);
 
-        Call<List<Movie>> call=movieApiCall.getMovie();
 
+        Call<JsonResponse> call=movieApiCall.getMovie();
+
+        call.enqueue(new Callback<JsonResponse>() {
+            @Override
+            public void onResponse(Call<JsonResponse> call, Response<JsonResponse> response) {
+
+                JsonResponse jsonResponse=response.body();
+                movieList=new ArrayList<>(Arrays.asList(jsonResponse.getMoviz()));
+                putDataIntoRecyclerView(movieList);
+            }
+
+            @Override
+            public void onFailure(Call<JsonResponse> call, Throwable t) {
+                Toast.makeText(MainActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+
+
+
+    /*    Call<List<movies>> call=movieApiCall.getMovie();
         call.enqueue(new Callback<List<Movie>>() {
             @Override
             public void onResponse(Call<List<Movie>> call, Response<List<Movie>> response) {
@@ -60,7 +91,7 @@ public class MainActivity extends AppCompatActivity {
                 /*adapter=new Adapter(context,movieList);
                 recyclerView.setAdapter(adapter);
                 adapter.notifyDataSetChanged();
-                 */
+
                 putDataIntoRecyclerView(movieList);
             }
 
@@ -70,8 +101,11 @@ public class MainActivity extends AppCompatActivity {
                 Log.d(TAG, "onFailure: "+t.getMessage());
             }
         });
+         */
+
 
     }
+
 
     private void putDataIntoRecyclerView(List<Movie> movieList) {
         MovieAdapter movieAdapter=new MovieAdapter(context,movieList);

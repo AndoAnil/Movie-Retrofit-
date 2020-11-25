@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -33,9 +34,12 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.Viewholder> 
 
     @Override
     public void onBindViewHolder(@NonNull Viewholder holder, int position) {
-     holder.rollo.setText(Integer.toString(movies.get(position).getId()));
-     holder.name.setText(movies.get(position).getName());
-     Glide.with(context).load(movies.get(position).getImage()).into(holder.imageView);
+     holder.title.setText(movies.get(position).getTitle());
+     holder.duration.setText(movies.get(position).getTitle());
+     holder.category.setText(movies.get(position).getMoreDetails().getCategory());
+     holder.releasedate.setText(movies.get(position).getMoreDetails().getRelease());
+     holder.ratingBar.setRating(Float.parseFloat(String.valueOf(movies.get(position).getRating())));
+     Glide.with(context).load(movies.get(position).getPoster()).into(holder.imageView);
     }
 
     @Override
@@ -46,12 +50,16 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.Viewholder> 
     public class Viewholder extends RecyclerView.ViewHolder
     {
          ImageView imageView;
-         TextView rollo,name;
+         TextView title,duration,category,releasedate;
+         RatingBar ratingBar;
         public Viewholder(@NonNull View itemView) {
             super(itemView);
-            imageView=(ImageView) itemView.findViewById(R.id.imageid);
-            rollo =(TextView) itemView.findViewById(R.id.userid);
-            name=(TextView) itemView.findViewById(R.id.name);
+            imageView=(ImageView) itemView.findViewById(R.id.imageView);
+            title =(TextView) itemView.findViewById(R.id.textView2);
+            duration=(TextView) itemView.findViewById(R.id.textView3);
+            category=(TextView) itemView.findViewById(R.id.textView);
+            releasedate=(TextView) itemView.findViewById(R.id.textView4);
+            ratingBar=(RatingBar) itemView.findViewById(R.id.ratingBar);
         }
     }
 }
